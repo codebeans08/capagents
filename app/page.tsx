@@ -19,22 +19,22 @@ export default function Home() {
 
         setIsLoading(true)
         try {
-            console.log('Searching property with code:', code)
+            // console.log('Searching property with code:', code)
             const requestUrl = getPropertyRequestUrl(code)
-            console.log('Primary Request URL:', requestUrl)
+            // console.log('Primary Request URL:', requestUrl)
             const data = await fetchPropertyById(code)
             if (data) {
-                console.log('Property data:', data)
+                // console.log('Property data:', data)
                 // Navigate to details using query param compatible with Angular style
                 router.push(`/details?property_id=${encodeURIComponent(code)}`)
             } else {
-                console.log('No property found for code:', code)
-                console.log('Tried URL:', requestUrl)
+                // console.log('No property found for code:', code)
+                // console.log('Tried URL:', requestUrl)
                 setPopupMessage('No property found with the provided code. Please check the code and try again.')
                 setShowPopup(true)
             }
         } catch (err) {
-            console.error('Search error:', err)
+            // console.error('Search error:', err)
             setPopupMessage('An error occurred while searching for the property. Please try again.')
             setShowPopup(true)
         } finally {
