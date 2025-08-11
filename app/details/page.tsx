@@ -113,7 +113,7 @@ export default function PropertyDetails() {
             setPropertyData(loaded ?? DUMMY_PROPERTY_DATA)
         } catch (err) {
             setError('Failed to load property data')
-            console.error('Error fetching property data:', err)
+            // console.error('Error fetching property data:', err)
         } finally {
             setIsLoading(false)
         }
@@ -224,13 +224,13 @@ export default function PropertyDetails() {
                 alert('Link copied to clipboard!')
             }
         } catch (err) {
-            console.error('Error sharing:', err)
+            // console.error('Error sharing:', err)
             // Fallback to clipboard
             try {
                 await navigator.clipboard.writeText(window.location.href)
                 alert('Link copied to clipboard!')
             } catch (clipboardErr) {
-                console.error('Clipboard error:', clipboardErr)
+                // console.error('Clipboard error:', clipboardErr)
             }
         }
     }, [propertyData])
