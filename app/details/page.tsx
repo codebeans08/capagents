@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWhatsapp } from '@fortawesome/free-brands-svg-icons'
-import { faPaperPlane, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faPaperPlane, faChevronLeft, faChevronRight, faArrowUp } from '@fortawesome/free-solid-svg-icons'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Thumbs, FreeMode } from 'swiper/modules'
 import type { Swiper as SwiperType } from 'swiper'
@@ -80,6 +80,7 @@ export default function PropertyDetails() {
     const [error, setError] = useState<string | null>(null)
     const [descriptionGroups, setDescriptionGroups] = useState<string[]>([])
     const [descriptionRemainder, setDescriptionRemainder] = useState<string>('')
+    const [showScrollTop, setShowScrollTop] = useState<boolean>(false)
 
     // Fetch property data - Uses API if configured, otherwise falls back to dummy
     const fetchPropertyData = useCallback(async () => {
@@ -132,6 +133,71 @@ export default function PropertyDetails() {
         fetchPropertyData()
     }, [fetchPropertyData])
 
+    // Cleanup Swiper instances on unmount
+    useEffect(() => {
+        return () => {
+            if (mainSwiper && !mainSwiper.destroyed) {
+                try {
+                    mainSwiper.destroy(true, true)
+                } catch (error) {
+                    console.warn('Error destroying main swiper:', error)
+                }
+            }
+            if (thumbsSwiper && !thumbsSwiper.destroyed) {
+                try {
+                    thumbsSwiper.destroy(true, true)
+                } catch (error) {
+                    console.warn('Error destroying thumbs swiper:', error)
+                }
+            }
+        }
+    }, [mainSwiper, thumbsSwiper])
+
+    // Scroll to top functionality
+    useEffect(() => {
+        let isMounted = true
+        
+        const handleScroll = () => {
+            if (!isMounted) return
+            
+            try {
+                const scrollY = window.scrollY
+                setShowScrollTop(scrollY > 300)
+            } catch (error) {
+                console.warn('Error in scroll handler:', error)
+            }
+        }
+
+        // Check initial scroll position
+        handleScroll()
+
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        
+        return () => {
+            isMounted = false
+            window.removeEventListener('scroll', handleScroll)
+        }
+    }, [])
+
+    const scrollToTop = () => {
+        try {
+            if (typeof window !== 'undefined' && window.scrollTo) {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                })
+            }
+        } catch (error) {
+            console.warn('Error scrolling to top:', error)
+            // Fallback to instant scroll
+            try {
+                window.scrollTo(0, 0)
+            } catch (fallbackError) {
+                console.warn('Fallback scroll also failed:', fallbackError)
+            }
+        }
+    }
+
     // Parse description into groups: nearest previous <p> + the following <ul>
     useEffect(() => {
         const html = propertyData?.description ?? ''
@@ -140,48 +206,91 @@ export default function PropertyDetails() {
             setDescriptionRemainder('')
             return
         }
+        
         try {
             const parser = new DOMParser()
             const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html')
-            const container = (doc.body.firstElementChild || doc.body) as HTMLElement
+            
+            // Safety check for valid document
+            if (!doc.body || !doc.body.firstElementChild) {
+                setDescriptionGroups([])
+                setDescriptionRemainder('')
+                return
+            }
+            
+            const container = doc.body.firstElementChild as HTMLElement
+            if (!container || !container.children) {
+                setDescriptionGroups([])
+                setDescriptionRemainder('')
+                return
+            }
+            
             const elements = Array.from(container.children)
             const consumed = new Set<number>()
             const groups: string[] = []
 
             for (let i = 0; i < elements.length; i += 1) {
                 if (consumed.has(i)) continue
+                
                 const el = elements[i]
+                if (!el || !el.tagName) continue
+                
                 if (el.tagName.toLowerCase() === 'ul') {
                     let prevPIndex = i - 1
                     while (
                         prevPIndex >= 0 &&
-                        (consumed.has(prevPIndex) || elements[prevPIndex].tagName.toLowerCase() !== 'p')
+                        (consumed.has(prevPIndex) || 
+                         !elements[prevPIndex] || 
+                         !elements[prevPIndex].tagName ||
+                         elements[prevPIndex].tagName.toLowerCase() !== 'p')
                     ) {
                         prevPIndex -= 1
                     }
+                    
                     const startIndex = prevPIndex >= 0 ? prevPIndex : i
                     const fragment = doc.createElement('div')
+                    
                     for (let k = startIndex; k <= i; k += 1) {
-                        if (!consumed.has(k)) {
-                            fragment.appendChild(elements[k].cloneNode(true))
-                            consumed.add(k)
+                        if (!consumed.has(k) && elements[k] && elements[k].parentNode) {
+                            try {
+                                const clonedNode = elements[k].cloneNode(true)
+                                if (clonedNode && fragment) {
+                                    fragment.appendChild(clonedNode)
+                                }
+                                consumed.add(k)
+                            } catch (cloneError) {
+                                console.warn('Failed to clone element:', cloneError)
+                                consumed.add(k)
+                            }
                         }
                     }
-                    groups.push(fragment.innerHTML)
+                    
+                    if (fragment.innerHTML) {
+                        groups.push(fragment.innerHTML)
+                    }
                 }
             }
 
             // Remaining nodes (e.g., trailing <p>) are rendered after groups
             const remainderFrag = doc.createElement('div')
             for (let i = 0; i < elements.length; i += 1) {
-                if (!consumed.has(i)) {
-                    remainderFrag.appendChild(elements[i].cloneNode(true))
+                if (!consumed.has(i) && elements[i] && elements[i].parentNode) {
+                    try {
+                        const clonedNode = elements[i].cloneNode(true)
+                        if (clonedNode && remainderFrag) {
+                            remainderFrag.appendChild(clonedNode)
+                        }
+                    } catch (cloneError) {
+                        console.warn('Failed to clone element:', cloneError)
+                    }
                 }
             }
 
             setDescriptionGroups(groups)
-            setDescriptionRemainder(remainderFrag.innerHTML)
-        } catch (_) {
+            setDescriptionRemainder(remainderFrag.innerHTML || '')
+            
+        } catch (error) {
+            console.warn('Error parsing description:', error)
             setDescriptionGroups([])
             setDescriptionRemainder('')
         }
@@ -287,30 +396,32 @@ export default function PropertyDetails() {
             <div className={styles.overlay}>
                 <div className={styles.content}>
                     <div className={styles.logo}>
-                        <img
-                            src={LOGO_IMAGE}
-                            alt="Cape Agents"
-                            className={styles.logoImage}
-                            onError={(e) => {
-                                const target = e.currentTarget
-                                target.style.display = 'none'
-                                const nextElement = target.nextElementSibling as HTMLElement
-                                if (nextElement) {
-                                    nextElement.style.display = 'block'
-                                }
-                            }}
-                        />
-                        <div className={styles.logoText} style={{ display: 'none' }}>
-                            <h1>CAPE<span className={styles.agents}>AGENTS</span></h1>
-                            <p className={styles.tagline}>CO.ZA</p>
-                        </div>
+                        <a href="/" className={styles.logoLink}>
+                            <img
+                                src={LOGO_IMAGE}
+                                alt="Cape Agents"
+                                className={styles.logoImage}
+                                onError={(e) => {
+                                    const target = e.currentTarget
+                                    target.style.display = 'none'
+                                    const nextElement = target.nextElementSibling as HTMLElement
+                                    if (nextElement) {
+                                        nextElement.style.display = 'block'
+                                    }
+                                }}
+                            />
+                            <div className={styles.logoText} style={{ display: 'none' }}>
+                                <h1>CAPE<span className={styles.agents}>AGENTS</span></h1>
+                                <p className={styles.tagline}>CO.ZA</p>
+                            </div>
+                        </a>
                     </div>
 
                     <div className={styles.detailsWrapper}>
                         <div className={styles.detailsContainer}>
                             <div className={styles.header}>
                                 <h2 className={styles.propertyTitle}>
-                                    Property Details: <span>{propertyData.id} - {propertyData.name}</span>
+                                    Property Details: <span><a href={propertyData.property_url} target="_blank" rel="noopener noreferrer" className={styles.propertyTitleLink}>{propertyData.id} - {propertyData.name}</a></span>
                                 </h2>
                                 <button
                                     onClick={handleBackToSearch}
@@ -412,14 +523,18 @@ export default function PropertyDetails() {
                                             className={`${styles.shareButton} ${styles.whatsappButton}`}
                                             title="Share on WhatsApp"
                                         >
-                                            <FontAwesomeIcon icon={faWhatsapp} size="lg" />
+                                            <svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M18.1199 13.6004L14.5117 11.7965C14.4052 11.7435 14.2865 11.7196 14.1677 11.7271C14.0489 11.7346 13.9342 11.7733 13.8352 11.8394L12.0672 13.0175C11.1722 12.5594 10.4439 11.8313 9.98575 10.9363L11.1652 9.16956C11.2312 9.07054 11.2699 8.95585 11.2774 8.83708C11.285 8.7183 11.261 8.59965 11.208 8.49309L9.40393 4.88525C9.34784 4.77237 9.26132 4.67741 9.15414 4.61107C9.04695 4.54474 8.92336 4.50966 8.79731 4.5098C7.66094 4.5098 6.57111 4.96119 5.76757 5.76465C4.96404 6.56812 4.51262 7.65785 4.51262 8.79412C4.5156 11.3648 5.5382 13.8293 7.35608 15.647C9.17396 17.4647 11.6387 18.4872 14.2096 18.4902C15.3459 18.4902 16.4358 18.0388 17.2393 17.2353C18.0428 16.4319 18.4942 15.3422 18.4942 14.2059C18.4943 14.0801 18.4593 13.9569 18.3932 13.8499C18.327 13.743 18.2324 13.6566 18.1199 13.6004ZM14.2096 17.1373C11.9974 17.1346 9.87671 16.2547 8.31251 14.6906C6.74831 13.1266 5.86836 11.006 5.86568 8.79412C5.86574 8.08664 6.12169 7.40305 6.58631 6.86948C7.05092 6.3359 7.69284 5.98835 8.39365 5.89093L9.82113 8.74564L8.6496 10.5022C8.58805 10.5949 8.55029 10.7012 8.53967 10.812C8.52905 10.9227 8.54589 11.0343 8.58871 11.137C9.21081 12.6159 10.3874 13.7924 11.8665 14.4145C11.9692 14.4573 12.0808 14.4741 12.1915 14.4635C12.3023 14.4529 12.4087 14.4151 12.5013 14.3536L14.258 13.1822L17.113 14.6095C17.0156 15.3103 16.668 15.9521 16.1344 16.4167C15.6007 16.8813 14.9171 17.1372 14.2096 17.1373ZM11.5034 2.53469e-07C9.50968 -0.000418252 7.55007 0.517418 5.81684 1.50271C4.08362 2.488 2.63632 3.90689 1.61694 5.62018C0.597556 7.33348 0.0411108 9.28232 0.00219191 11.2755C-0.036727 13.2687 0.443218 15.2378 1.39494 16.9896L0.0847261 20.921C-0.00803013 21.1991 -0.0214912 21.4975 0.0458517 21.7829C0.113195 22.0682 0.25868 22.3292 0.466002 22.5365C0.673323 22.7438 0.934288 22.8892 1.21965 22.9566C1.50501 23.0239 1.80348 23.0104 2.08162 22.9177L6.01339 21.6076C7.55247 22.4427 9.26196 22.9154 11.0115 22.9897C12.761 23.0639 14.5044 22.7376 16.1087 22.0358C17.713 21.334 19.1359 20.2752 20.2688 18.9401C21.4017 17.6049 22.2147 16.0287 22.6459 14.3317C23.0771 12.6347 23.115 10.8616 22.7568 9.14763C22.3986 7.4337 21.6537 5.82419 20.579 4.44182C19.5042 3.05944 18.128 1.94072 16.5552 1.17095C14.9824 0.401172 13.2545 0.00067744 11.5034 2.53469e-07ZM11.5034 21.6471C9.71957 21.6475 7.96712 21.1777 6.42269 20.2851C6.31973 20.2259 6.20318 20.1945 6.08442 20.1938C6.01163 20.1942 5.93934 20.206 5.87019 20.2287L1.65428 21.6335C1.61454 21.6468 1.5719 21.6487 1.53114 21.6391C1.49037 21.6295 1.45309 21.6087 1.42347 21.5791C1.39386 21.5495 1.37307 21.5122 1.36345 21.4714C1.35383 21.4307 1.35576 21.388 1.36901 21.3483L2.77393 17.1373C2.80433 17.0463 2.81503 16.9498 2.80531 16.8544C2.79559 16.759 2.76567 16.6667 2.71756 16.5837C1.59819 14.6502 1.14825 12.4014 1.43755 10.1861C1.72685 7.97086 2.73922 5.91298 4.31758 4.33176C5.89595 2.75053 7.95209 1.73435 10.167 1.44088C12.3819 1.1474 14.6318 1.59302 16.5675 2.70862C18.5033 3.82422 20.0167 5.54743 20.8731 7.61089C21.7294 9.67436 21.8808 11.9627 21.3037 14.121C20.7265 16.2793 19.4532 18.1867 17.6813 19.5475C15.9093 20.9083 13.7377 21.6463 11.5034 21.6471Z" fill="#1D1D1D" />
+                                            </svg>
                                         </button>
                                         <button
                                             onClick={handleShare}
                                             className={styles.shareButton}
                                             title="Share this property"
                                         >
-                                            <FontAwesomeIcon icon={faPaperPlane} size="lg" />
+                                            <svg width="25" height="23" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M24.5337 0.431305C24.3349 0.245646 24.0853 0.112853 23.8111 0.0469716C23.537 -0.0189096 23.2487 -0.01543 22.9765 0.0570421H22.964L1.14861 6.14457C0.838775 6.2271 0.563525 6.39429 0.359349 6.62398C0.155172 6.85367 0.0317112 7.135 0.0053313 7.4307C-0.0210486 7.72639 0.0508983 8.02247 0.211635 8.2797C0.372372 8.53693 0.614307 8.74315 0.905372 8.87104L10.6304 13.2242L15.3543 22.1637C15.4815 22.4143 15.6841 22.6262 15.9381 22.7744C16.192 22.9226 16.4868 23.0009 16.7876 23C16.833 23 16.8796 23 16.9251 22.9948C17.2473 22.9715 17.554 22.8578 17.8037 22.6692C18.0535 22.4806 18.2344 22.2261 18.322 21.9399L24.9372 1.87504V1.86354C25.0164 1.61352 25.0208 1.34845 24.9497 1.09635C24.8787 0.844256 24.735 0.614482 24.5337 0.431305ZM23.6244 1.51855L17.0149 21.5813V21.5928C17.0022 21.6344 16.9759 21.6714 16.9395 21.6987C16.9031 21.7259 16.8585 21.7422 16.8116 21.7452C16.7648 21.7481 16.7181 21.7377 16.678 21.7153C16.6378 21.6929 16.6062 21.6596 16.5875 21.62L11.9637 12.8823L17.5332 7.75975C17.5966 7.70147 17.6468 7.63229 17.6811 7.55614C17.7154 7.48 17.733 7.39839 17.733 7.31597C17.733 7.23355 17.7154 7.15194 17.6811 7.07579C17.6468 6.99965 17.5966 6.93046 17.5332 6.87218C17.4698 6.8139 17.3946 6.76768 17.3118 6.73614C17.229 6.7046 17.1403 6.68836 17.0507 6.68836C16.9611 6.68836 16.8723 6.7046 16.7896 6.73614C16.7068 6.76768 16.6315 6.8139 16.5682 6.87218L10.9987 11.9948L1.49074 7.73675C1.4486 7.71869 1.4135 7.68919 1.39016 7.65221C1.36682 7.61524 1.35637 7.57257 1.36021 7.52996C1.36405 7.48735 1.382 7.44685 1.41164 7.41392C1.44128 7.38098 1.48118 7.35719 1.52597 7.34576H1.53848L23.3516 1.26347C23.3899 1.25357 23.4305 1.25339 23.4689 1.26296C23.5073 1.27253 23.5422 1.29149 23.5698 1.31783C23.5979 1.34363 23.6181 1.37574 23.6285 1.41095C23.6388 1.44616 23.639 1.48326 23.629 1.51855H23.6244Z" fill="#1D1D1D" />
+                                            </svg>
                                         </button>
                                     </div>
                                 </div>
@@ -542,7 +657,15 @@ export default function PropertyDetails() {
                             {/* Property Summary Section */}
                             <div className={styles.propertySummarySection}>
                                 <div className={styles.propertySummary}>
-                                    <span className={styles.summaryName}>{propertyData.name}</span>
+                                    <span className={styles.summaryName}>
+                                        {propertyData.property_url ? (
+                                            <a href={propertyData.property_url} target="_blank" rel="noopener noreferrer" className={styles.propertySummaryLink}>
+                                                {propertyData.name}
+                                            </a>
+                                        ) : (
+                                            propertyData.name
+                                        )}
+                                    </span>
                                     <span className={styles.summarySeparator}>, </span>
                                     <span className={styles.summarySuburb}>{propertyData.suburb}</span>
                                     <span className={styles.summarySeparator}>, </span>
@@ -600,6 +723,18 @@ export default function PropertyDetails() {
                     </div>
                 </div>
             </div>
+
+            {/* Scroll to Top Button */}
+            {showScrollTop && (
+                <button
+                    onClick={scrollToTop}
+                    className={styles.scrollToTopButton}
+                    title="Scroll to top"
+                    aria-label="Scroll to top of page"
+                >
+                    ↑
+                </button>
+            )}
         </div>
     )
 }

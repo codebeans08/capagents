@@ -4,6 +4,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Cape Agents - Property Search',
   description: 'Enter property code to view details',
+  robots: {
+    index: false,
+    follow: false,
+  },
 }
 
 export default function RootLayout({
