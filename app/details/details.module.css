@@ -255,7 +255,8 @@
 }
 
 .activeThumbnail {
-  border-color: #4a9b8e;
+  transform: scale(1.02);
+
 }
 
 .activeThumbnail::after {
@@ -296,14 +297,16 @@
   cursor: pointer;
   user-select: none;
   opacity: 0.95;
+  transition: all 0.2s ease;
+  overflow: hidden;
 }
 
 .container :global(.swiper-button-prev-custom) {
-  left: 0;
+  left: 10px;
 }
 
 .container :global(.swiper-button-next-custom) {
-  right: 0;
+  right: 10px;
 }
 
 .container :global(.swiper-button-prev-custom:hover),
@@ -350,7 +353,7 @@
   min-width: 120px;
   text-align: left;
   margin-right: 16px;
-  font-size: 15px;
+  font-size: 16px;
 }
 
 .value {
@@ -468,7 +471,7 @@
   .container :global(.swiper-button-next-custom) {
     width: 40px;
     height: 40px;
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .container :global(.swiper-button-prev-custom) {
@@ -489,10 +492,12 @@
     min-width: auto;
     margin-right: 0;
     font-size: 14px;
+    flex: 1;
   }
 
   .value {
     font-size: 14px;
+    flex: 3;
   }
 
   .shareSection {
@@ -574,15 +579,17 @@
   .container :global(.swiper-button-next-custom) {
     width: 35px;
     height: 35px;
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .container :global(.swiper-button-prev-custom) {
     left: 12px;
+    right: auto;
   }
 
   .container :global(.swiper-button-next-custom) {
     right: 12px;
+    left: auto;
   }
 
 
@@ -706,6 +713,7 @@
 .summaryBedrooms {
   font-weight: 500;
   color: #1D1D1D;
+  line-height: 1.8;
 }
 
 .summaryPool {
@@ -733,6 +741,7 @@
   color: #1D1D1D;
   font-size: 16px;
   line-height: 1.6;
+  font-style: italic;
 }
 
 .policyItem {
@@ -911,7 +920,7 @@
 
   .propertySummary {
     font-size: 16px;
-    line-height: 1.3;
+    line-height: 1.5;
   }
 
   .propertySummarySection {
@@ -1275,6 +1284,26 @@
   }
 }
 
+/* Extra small screens */
+@media (max-width: 360px) {
+  .container :global(.swiper-button-prev-custom),
+  .container :global(.swiper-button-next-custom) {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  .container :global(.swiper-button-prev-custom) {
+    left: 8px;
+    right: auto;
+  }
+
+  .container :global(.swiper-button-next-custom) {
+    right: 8px;
+    left: auto;
+  }
+}
+
 /* Loading and Error States */
 .loading,
 .error {
@@ -1364,4 +1393,35 @@
 .scrollToTopButton:active {
   transform: translateY(-1px) scale(0.98);
   transition: all 0.1s ease;
+}
+
+/* Responsive Scroll Button */
+@media (max-width: 768px) {
+  .scrollToTopButton {
+    width: 40px;
+    height: 40px;
+    bottom: 25px;
+    right: 25px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .scrollToTopButton {
+    width: 35px;
+    height: 35px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 360px) {
+  .scrollToTopButton {
+    width: 30px;
+    height: 30px;
+    bottom: 15px;
+    right: 15px;
+    font-size: 12px;
+  }
 }

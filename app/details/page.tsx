@@ -138,14 +138,20 @@ export default function PropertyDetails() {
         return () => {
             if (mainSwiper && !mainSwiper.destroyed) {
                 try {
-                    mainSwiper.destroy(true, true)
+                    // Check if the swiper element still exists in DOM before destroying
+                    if (mainSwiper.el && mainSwiper.el.parentNode) {
+                        mainSwiper.destroy(true, true)
+                    }
                 } catch (error) {
                     console.warn('Error destroying main swiper:', error)
                 }
             }
             if (thumbsSwiper && !thumbsSwiper.destroyed) {
                 try {
-                    thumbsSwiper.destroy(true, true)
+                    // Check if the swiper element still exists in DOM before destroying
+                    if (thumbsSwiper.el && thumbsSwiper.el.parentNode) {
+                        thumbsSwiper.destroy(true, true)
+                    }
                 } catch (error) {
                     console.warn('Error destroying thumbs swiper:', error)
                 }
@@ -156,10 +162,10 @@ export default function PropertyDetails() {
     // Scroll to top functionality
     useEffect(() => {
         let isMounted = true
-        
+
         const handleScroll = () => {
             if (!isMounted) return
-            
+
             try {
                 const scrollY = window.scrollY
                 setShowScrollTop(scrollY > 300)
@@ -172,7 +178,7 @@ export default function PropertyDetails() {
         handleScroll()
 
         window.addEventListener('scroll', handleScroll, { passive: true })
-        
+
         return () => {
             isMounted = false
             window.removeEventListener('scroll', handleScroll)
@@ -206,52 +212,52 @@ export default function PropertyDetails() {
             setDescriptionRemainder('')
             return
         }
-        
+
         try {
             const parser = new DOMParser()
             const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html')
-            
+
             // Safety check for valid document
             if (!doc.body || !doc.body.firstElementChild) {
                 setDescriptionGroups([])
                 setDescriptionRemainder('')
                 return
             }
-            
+
             const container = doc.body.firstElementChild as HTMLElement
             if (!container || !container.children) {
                 setDescriptionGroups([])
                 setDescriptionRemainder('')
                 return
             }
-            
+
             const elements = Array.from(container.children)
             const consumed = new Set<number>()
             const groups: string[] = []
 
             for (let i = 0; i < elements.length; i += 1) {
                 if (consumed.has(i)) continue
-                
+
                 const el = elements[i]
                 if (!el || !el.tagName) continue
-                
+
                 if (el.tagName.toLowerCase() === 'ul') {
                     let prevPIndex = i - 1
                     while (
                         prevPIndex >= 0 &&
-                        (consumed.has(prevPIndex) || 
-                         !elements[prevPIndex] || 
-                         !elements[prevPIndex].tagName ||
-                         elements[prevPIndex].tagName.toLowerCase() !== 'p')
+                        (consumed.has(prevPIndex) ||
+                            !elements[prevPIndex] ||
+                            !elements[prevPIndex].tagName ||
+                            elements[prevPIndex].tagName.toLowerCase() !== 'p')
                     ) {
                         prevPIndex -= 1
                     }
-                    
+
                     const startIndex = prevPIndex >= 0 ? prevPIndex : i
                     const fragment = doc.createElement('div')
-                    
-                    for (let k = startIndex; k <= i; k += 1) {
-                        if (!consumed.has(k) && elements[k] && elements[k].parentNode) {
+
+                    for (let k = startIndex; k <= i && k < elements.length; k += 1) {
+                        if (!consumed.has(k) && elements[k]) {
                             try {
                                 const clonedNode = elements[k].cloneNode(true)
                                 if (clonedNode && fragment) {
@@ -264,7 +270,7 @@ export default function PropertyDetails() {
                             }
                         }
                     }
-                    
+
                     if (fragment.innerHTML) {
                         groups.push(fragment.innerHTML)
                     }
@@ -274,7 +280,7 @@ export default function PropertyDetails() {
             // Remaining nodes (e.g., trailing <p>) are rendered after groups
             const remainderFrag = doc.createElement('div')
             for (let i = 0; i < elements.length; i += 1) {
-                if (!consumed.has(i) && elements[i] && elements[i].parentNode) {
+                if (!consumed.has(i) && elements[i] && i < elements.length) {
                     try {
                         const clonedNode = elements[i].cloneNode(true)
                         if (clonedNode && remainderFrag) {
@@ -288,7 +294,7 @@ export default function PropertyDetails() {
 
             setDescriptionGroups(groups)
             setDescriptionRemainder(remainderFrag.innerHTML || '')
-            
+
         } catch (error) {
             console.warn('Error parsing description:', error)
             setDescriptionGroups([])
@@ -305,14 +311,24 @@ export default function PropertyDetails() {
 
     const goToImage = useCallback((index: number) => {
         setCurrentImageIndex(index)
-        if (mainSwiper) {
-            mainSwiper.slideTo(index)
+        if (mainSwiper && !mainSwiper.destroyed && mainSwiper.el && mainSwiper.el.parentNode) {
+            try {
+                mainSwiper.slideTo(index)
+            } catch (error) {
+                console.warn('Error navigating to image:', error)
+            }
         }
     }, [mainSwiper])
 
     // Handle main swiper slide change
     const handleSlideChange = useCallback((swiper: SwiperType) => {
-        setCurrentImageIndex(swiper.activeIndex)
+        try {
+            if (swiper && !swiper.destroyed && swiper.el && swiper.el.parentNode) {
+                setCurrentImageIndex(swiper.activeIndex)
+            }
+        } catch (error) {
+            console.warn('Error handling slide change:', error)
+        }
     }, [])
 
     // Share handlers
@@ -436,7 +452,11 @@ export default function PropertyDetails() {
                                     {/* Main Swiper */}
                                     <Swiper
                                         modules={[Navigation, Thumbs]}
-                                        onSwiper={setMainSwiper}
+                                        onSwiper={(swiper) => {
+                                            if (swiper && swiper.el && swiper.el.parentNode) {
+                                                setMainSwiper(swiper)
+                                            }
+                                        }}
                                         onSlideChange={handleSlideChange}
                                         navigation={{
                                             nextEl: '.swiper-button-next-custom',
@@ -462,17 +482,27 @@ export default function PropertyDetails() {
 
                                         {/* Custom Navigation Buttons */}
                                         <div className="swiper-button-prev-custom" aria-label="Previous slide">
-                                            <FontAwesomeIcon icon={faChevronLeft} size="lg" />
+                                            <svg width="100%" height="100%" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="21.5" cy="21.5" r="21" fill="#E2E2E2" stroke="#E2E2E2" />
+                                                <path d="M26 9L13 21L26 33" stroke="#1D1D1D" strokeWidth="2" strokeLinecap="square" />
+                                            </svg>
                                         </div>
                                         <div className="swiper-button-next-custom" aria-label="Next slide">
-                                            <FontAwesomeIcon icon={faChevronRight} size="lg" />
+                                            <svg width="100%" height="100%" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="21.5" cy="21.5" r="21" transform="rotate(-180 21.5 21.5)" fill="#E2E2E2" stroke="#E2E2E2" />
+                                                <path d="M17 34L30 22L17 10" stroke="#1D1D1D" strokeWidth="2" strokeLinecap="square" />
+                                            </svg>
                                         </div>
                                     </Swiper>
 
                                     {/* Thumbnail Swiper */}
                                     <Swiper
                                         modules={[FreeMode]}
-                                        onSwiper={setThumbsSwiper}
+                                        onSwiper={(swiper) => {
+                                            if (swiper && swiper.el && swiper.el.parentNode) {
+                                                setThumbsSwiper(swiper)
+                                            }
+                                        }}
                                         spaceBetween={8}
                                         slidesPerView={5}
                                         freeMode={true}
