@@ -214,24 +214,37 @@ export default function PropertyDetails() {
         }
 
         try {
+            // Check if DOMParser is available (for SSR compatibility)
+            if (typeof DOMParser === 'undefined') {
+                setDescriptionGroups([])
+                setDescriptionRemainder('')
+                return
+            }
+            
             const parser = new DOMParser()
             const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html')
 
             // Safety check for valid document
-            if (!doc.body || !doc.body.firstElementChild) {
+            if (!doc || !doc.body || !doc.body.firstElementChild) {
                 setDescriptionGroups([])
                 setDescriptionRemainder('')
                 return
             }
 
             const container = doc.body.firstElementChild as HTMLElement
-            if (!container || !container.children) {
+            if (!container || !container.children || container.children.length === 0) {
                 setDescriptionGroups([])
                 setDescriptionRemainder('')
                 return
             }
 
             const elements = Array.from(container.children)
+            if (!elements || elements.length === 0) {
+                setDescriptionGroups([])
+                setDescriptionRemainder('')
+                return
+            }
+            
             const consumed = new Set<number>()
             const groups: string[] = []
 
@@ -239,61 +252,58 @@ export default function PropertyDetails() {
                 if (consumed.has(i)) continue
 
                 const el = elements[i]
-                if (!el || !el.tagName) continue
+                if (!el || !el.tagName || typeof el.tagName !== 'string') continue
 
                 if (el.tagName.toLowerCase() === 'ul') {
                     let prevPIndex = i - 1
                     while (
                         prevPIndex >= 0 &&
+                        prevPIndex < elements.length &&
                         (consumed.has(prevPIndex) ||
                             !elements[prevPIndex] ||
                             !elements[prevPIndex].tagName ||
+                            typeof elements[prevPIndex].tagName !== 'string' ||
                             elements[prevPIndex].tagName.toLowerCase() !== 'p')
                     ) {
                         prevPIndex -= 1
                     }
 
-                    const startIndex = prevPIndex >= 0 ? prevPIndex : i
-                    const fragment = doc.createElement('div')
-
+                    const startIndex = Math.max(0, Math.min(prevPIndex >= 0 ? prevPIndex : i, elements.length - 1))
+                    
+                    // Build group HTML string directly instead of cloning nodes
+                    let groupHtml = ''
                     for (let k = startIndex; k <= i && k < elements.length; k += 1) {
                         if (!consumed.has(k) && elements[k]) {
                             try {
-                                const clonedNode = elements[k].cloneNode(true)
-                                if (clonedNode && fragment) {
-                                    fragment.appendChild(clonedNode)
-                                }
+                                groupHtml += elements[k].outerHTML || ''
                                 consumed.add(k)
-                            } catch (cloneError) {
-                                console.warn('Failed to clone element:', cloneError)
+                            } catch (error) {
+                                console.warn('Failed to get outerHTML:', error)
                                 consumed.add(k)
                             }
                         }
                     }
 
-                    if (fragment.innerHTML) {
-                        groups.push(fragment.innerHTML)
+                    if (groupHtml) {
+                        groups.push(groupHtml)
                     }
                 }
             }
 
             // Remaining nodes (e.g., trailing <p>) are rendered after groups
-            const remainderFrag = doc.createElement('div')
+            let remainderHtml = ''
             for (let i = 0; i < elements.length; i += 1) {
                 if (!consumed.has(i) && elements[i] && i < elements.length) {
                     try {
-                        const clonedNode = elements[i].cloneNode(true)
-                        if (clonedNode && remainderFrag) {
-                            remainderFrag.appendChild(clonedNode)
-                        }
-                    } catch (cloneError) {
-                        console.warn('Failed to clone element:', cloneError)
+                        remainderHtml += elements[i].outerHTML || ''
+                    } catch (error) {
+                        console.warn('Failed to get outerHTML:', error)
                     }
                 }
             }
 
             setDescriptionGroups(groups)
-            setDescriptionRemainder(remainderFrag.innerHTML || '')
+            setDescriptionRemainder(remainderHtml)
 
         } catch (error) {
             console.warn('Error parsing description:', error)
@@ -762,7 +772,7 @@ export default function PropertyDetails() {
                     title="Scroll to top"
                     aria-label="Scroll to top of page"
                 >
-                    ↑
+                    <FontAwesomeIcon icon={faArrowUp} />
                 </button>
             )}
         </div>
