@@ -1,0 +1,601 @@
+.container {
+  height: 100vh;
+  background-image: url('/images/banner_bg.jpg');
+  background-size: cover;
+  background-position: top;
+  background-repeat: no-repeat;
+  position: relative;
+  filter: grayscale(100%);
+  overflow: hidden;
+}
+
+/* You can replace the SVG above with an actual image URL */
+.container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+}
+
+.overlay {
+  position: relative;
+  z-index: 2;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.content {
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+}
+
+.logo {
+  padding: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.formWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImage {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.logoText h1 {
+  font-size: 2.8rem;
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.3rem;
+  color: white;
+  text-align: center;
+}
+
+.agents {
+  font-weight: 300;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.tagline {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+  text-align: center;
+}
+
+.formContainer {
+  padding: 45px 32px;
+  max-width: 470px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid #404040;
+  background: rgba(25, 25, 25, 0.75);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.label {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.input {
+  flex: 1;
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  background: transparent;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #979797;
+  background: transparent;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.submitButton {
+  padding: 10px 27px;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  background: #979797;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+.submitButton:hover {
+  background: white;
+  color: #1d1d1d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.submitButton:active {
+  transform: translateY(0);
+}
+
+.submitButton:disabled {
+  background: #666;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submitButton:disabled:hover {
+  background: #666;
+  color: rgba(255, 255, 255, 0.6);
+  box-shadow: none;
+}
+
+/* Circular Spinner */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Loading animation for button text */
+@keyframes loadingPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.submitButton:disabled {
+  animation: none;
+}
+
+/* Large Desktop (1440px+) */
+@media (min-width: 1440px) {
+  .logoImage {
+    max-width: 320px;
+  }
+
+  .formContainer {
+    max-width: 520px;
+    padding: 50px 40px;
+  }
+
+  .logoText h1 {
+    font-size: 3.2rem;
+  }
+}
+
+/* Desktop (1024px - 1439px) */
+@media (max-width: 1439px) and (min-width: 1024px) {
+  .logoImage {
+    max-width: 300px;
+  }
+
+  .formContainer {
+    max-width: 480px;
+  }
+}
+
+/* Tablet Landscape (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .overlay {
+    padding: 1.5rem;
+  }
+
+  .logo {
+    padding: 1.5rem 0;
+  }
+
+  .logoImage {
+    max-width: 260px;
+  }
+
+  .logoText h1 {
+    font-size: 2.4rem;
+  }
+
+  .formContainer {
+    max-width: 420px;
+    padding: 35px 28px;
+  }
+}
+
+/* Tablet Portrait (481px - 767px) */
+@media (max-width: 767px) and (min-width: 481px) {
+  .overlay {
+    padding: 1.2rem;
+  }
+
+  .logo {
+    padding: 1.2rem 0;
+  }
+
+  .logoImage {
+    max-width: 220px;
+  }
+
+  .logoText h1 {
+    font-size: 2.2rem;
+  }
+
+  .formContainer {
+    max-width: 90%;
+    padding: 30px 24px;
+    margin: 0 1rem;
+  }
+
+  .formRow {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .submitButton {
+    padding: 12px 20px;
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .input {
+    padding: 12px 16px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile Large (376px - 480px) */
+@media (max-width: 480px) and (min-width: 376px) {
+  .overlay {
+    padding: 1rem;
+  }
+
+  .logo {
+    padding: 1rem 0;
+  }
+
+  .logoImage {
+    max-width: 200px;
+  }
+
+  .logoText h1 {
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+  }
+
+  .formContainer {
+    padding: 25px 20px;
+    margin: 0 0.8rem;
+    max-width: 95%;
+  }
+
+  .label {
+    font-size: 0.95rem;
+  }
+
+  .formRow {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .input {
+    padding: 12px 14px;
+    font-size: 14px;
+  }
+
+  .submitButton {
+    padding: 12px 16px;
+    width: 100%;
+    font-size: 13px;
+  }
+}
+
+/* Mobile Medium (321px - 375px) */
+@media (max-width: 375px) and (min-width: 321px) {
+  .overlay {
+    padding: 0.8rem;
+  }
+
+  .logo {
+    padding: 0.8rem 0;
+  }
+
+  .logoImage {
+    max-width: 180px;
+  }
+
+  .logoText h1 {
+    font-size: 1.8rem;
+    letter-spacing: 0.08em;
+  }
+
+  .formContainer {
+    padding: 20px 16px;
+    margin: 0 0.5rem;
+    max-width: 95%;
+  }
+
+  .label {
+    font-size: 0.9rem;
+    line-height: 1.3;
+  }
+
+  .form {
+    gap: 1.5rem;
+  }
+
+  .inputGroup {
+    gap: 1rem;
+  }
+
+  .formRow {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .input {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .submitButton {
+    padding: 10px 14px;
+    width: 100%;
+    font-size: 12px;
+  }
+}
+
+/* Mobile Small (320px and below) */
+@media (max-width: 320px) {
+  .overlay {
+    padding: 0.5rem;
+  }
+
+  .logo {
+    padding: 0.5rem 0;
+  }
+
+  .logoImage {
+    max-width: 160px;
+  }
+
+  .logoText h1 {
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  .formContainer {
+    padding: 18px 14px;
+    margin: 0 0.3rem;
+    max-width: 98%;
+  }
+
+  .label {
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+
+  .form {
+    gap: 1.2rem;
+  }
+
+  .inputGroup {
+    gap: 0.8rem;
+  }
+
+  .formRow {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .input {
+    padding: 9px 10px;
+    font-size: 13px;
+  }
+
+  .submitButton {
+    padding: 9px 12px;
+    width: 100%;
+    font-size: 11px;
+  }
+}
+
+/* Landscape orientation for mobile devices */
+@media (max-height: 500px) and (orientation: landscape) {
+  .overlay {
+    padding: 0.5rem;
+  }
+
+  .logo {
+    padding: 0.5rem 0;
+  }
+
+  .logoImage {
+    max-width: 120px;
+  }
+
+  .logoText h1 {
+    font-size: 1.4rem;
+  }
+
+  .formContainer {
+    padding: 15px 20px;
+    max-width: 400px;
+  }
+
+  .form {
+    gap: 1rem;
+  }
+
+  .inputGroup {
+    gap: 0.8rem;
+  }
+
+  .label {
+    font-size: 0.8rem;
+  }
+}
+
+/* Popup Styles */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.popupContainer {
+  padding: 45px 32px;
+  max-width: 470px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border: 1px solid #404040;
+  background: rgba(25, 25, 25, 0.95);
+  animation: popupFadeIn 0.3s ease-out;
+}
+
+.popupContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  text-align: center;
+}
+
+.popupTitle {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 300;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+.popupMessage {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 300;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.popupButton {
+  padding: 10px 27px;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  background: #979797;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  white-space: nowrap;
+  min-width: 120px;
+  align-self: center;
+}
+
+.popupButton:hover {
+  background: white;
+  color: #1d1d1d;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.popupButton:active {
+  transform: translateY(0);
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsive popup styles for landscape mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .popupContainer {
+    padding: 25px 20px;
+    max-width: 400px;
+  }
+
+  .popupContent {
+    gap: 1.2rem;
+  }
+
+  .popupTitle {
+    font-size: 1.3rem;
+  }
+
+  .popupMessage {
+    font-size: 0.9rem;
+  }
+}
