@@ -412,7 +412,7 @@
   }
 
   .detailsContainer {
-    padding: 16px;
+    padding: 16px 16px 30px;
   }
 
   .header {
@@ -526,17 +526,14 @@
 
 /* Mobile styles */
 @media (max-width: 480px) {
-  .overlay {
-    padding: 0.5rem;
-  }
 
   .logoImage {
     max-width: 180px;
   }
 
-  .detailsContainer {
+  /* .detailsContainer {
     padding: 12px;
-  }
+  } */
 
   .propertyTitle {
     font-size: 1rem;
