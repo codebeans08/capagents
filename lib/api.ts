@@ -17,9 +17,19 @@ export interface PropertyData {
   yearBuilt: string
   parking: string
   description: string
+  be_aware?: Array<{
+    title: string
+    description: string
+  }> | string
   features: string[]
   amenities: string[]
   images: string[]
+  attributes?: Array<{
+    id: number
+    name: string
+    slug: string
+    featured: number
+  }>
   location: {
     latitude: number
     longitude: number
@@ -155,8 +165,19 @@ function mapToPropertyData(raw: LooseObject): PropertyData {
     yearBuilt: toStringSafe(getFirstField(raw, ['yearBuilt', 'year']) ?? ''),
     parking: toStringSafe(getFirstField(raw, ['parking']) ?? ''),
     description: toStringSafe(getFirstField(raw, ['description', 'details']) ?? ''),
+    be_aware: (() => {
+      const beAwareField = getFirstField(raw, ['be_aware', 'beAware', 'important_note', 'importantNote'])
+      if (Array.isArray(beAwareField)) {
+        return beAwareField.map(item => ({
+          title: toStringSafe(item.title || item.name || ''),
+          description: toStringSafe(item.description || item.text || '')
+        }))
+      }
+      return toStringSafe(beAwareField ?? '')
+    })(),
     features: Array.isArray((raw as any)?.features) ? (raw as any).features : [],
     amenities: Array.isArray((raw as any)?.amenities) ? (raw as any).amenities : [],
+    attributes: Array.isArray((raw as any)?.attributes) ? (raw as any).attributes : undefined,
     images: extractImages(raw),
     location: {
       latitude: lat,

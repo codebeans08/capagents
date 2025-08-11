@@ -101,7 +101,7 @@
 }
 
 .detailsContainer {
-  padding: 42px 66px;
+  padding: 42px 66px 65px;
   width: 100%;
   border-radius: 10px;
   border: 1px solid #404040;
@@ -120,12 +120,16 @@
 
 .propertyTitle {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
   color: #1d1d1d;
   margin: 0;
   flex: 1;
   text-align: left;
   min-width: 250px;
+}
+
+.propertyTitle span {
+  font-weight: 400;
 }
 
 .backButton {
@@ -145,7 +149,7 @@
 }
 
 .imageSlider {
-  padding-block: 25px 0;
+  padding-block: 17px 0;
   border-radius: 12px;
   overflow: hidden;
 }
@@ -174,7 +178,7 @@
 
 .mainImage {
   width: 100%;
-  height: 400px;
+  height: 492px;
   object-fit: cover;
   display: block;
 }
@@ -329,7 +333,7 @@
 .propertyInfo {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   padding-block: 8px;
 }
 
@@ -385,28 +389,17 @@
   border: none;
   color: #1D1D1D;
   cursor: pointer;
-  padding: 8px 10px;
   border-radius: 6px;
   transition: all 200ms ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 36px;
-  height: 36px;
 }
 
 .shareButton:hover {
-  background: rgba(29, 29, 29, 0.1);
   transform: translateY(-1px);
 }
 
-.whatsappButton {
-  color: #1D1D1D;
-}
-
-.whatsappButton:hover {
-  background: rgba(29, 29, 29, 0.1);
-}
 
 /* Tablet styles */
 @media (max-width: 768px) {
@@ -496,16 +489,13 @@
 
 
 
-  .propertyInfo {
+  /* .propertyInfo {
     padding: 16px;
     gap: 12px;
-  }
+  } */
 
-  .infoRow {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
+  /* .infoRow {
+  } */
 
   .label {
     min-width: auto;
@@ -521,12 +511,11 @@
     margin-left: 0;
     align-self: flex-end;
     position: absolute;
-    top: 8px;
+    top: 0;
     right: 8px;
   }
 
   .description {
-    padding: 16px;
     font-size: 14px;
   }
 
@@ -615,10 +604,10 @@
 
 
 
-  .propertyInfo {
+  /* .propertyInfo {
     padding: 12px;
     gap: 10px;
-  }
+  } */
 
   .label {
     font-size: 13px;
@@ -631,7 +620,7 @@
   }
 
   .shareSection {
-    top: 4px;
+    top: 0;
     right: 4px;
   }
 
@@ -662,7 +651,6 @@
   }
 
   .description {
-    padding: 12px;
     font-size: 13px;
   }
 
@@ -677,8 +665,8 @@
 
 /* New content sections */
 .section {
-  margin-top: 30px;
-  padding-top: 25px;
+  margin-top: 15px;
+  padding-top: 15px;
 }
 
 /* .section:first-of-type {
@@ -690,7 +678,7 @@
   font-size: 16px;
   font-weight: 700;
   color: #1D1D1D;
-  margin-bottom: 15px;
+  margin-bottom: 8px;
   text-align: left;
 }
 
@@ -704,8 +692,8 @@
   font-weight: 400;
 }
 
-.description p{
-  margin-bottom: 1rem;
+.description p {
+  margin-bottom: 10px;
 }
 
 .featureGrid {
@@ -715,21 +703,101 @@
   margin-top: 10px;
 }
 
+.attributesList {
+  margin-top: 1rem;
+  line-height: 1.6;
+  color: #1D1D1D;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.attributeText {
+  display: inline;
+}
+
+.propertySummary {
+  font-size: 18px;
+  line-height: 1.4;
+  color: #1D1D1D;
+}
+
+.summaryName {
+  font-weight: 700;
+  color: #1D1D1D;
+}
+
+.summarySuburb {
+  font-weight: 500;
+  color: #1D1D1D;
+}
+
+.summaryBedrooms {
+  font-weight: 500;
+  color: #1D1D1D;
+}
+
+.summaryPool {
+  font-weight: 500;
+  color: #1D1D1D;
+}
+
+.summaryId {
+  font-weight: 700;
+  color: #1D1D1D;
+}
+
+.propertySummarySection {
+  border-top: 1px solid #1d1d1d;
+  padding-top: 43px;
+  margin-top: 30px;
+}
+
+
+.beAwareContent {
+  margin-top: 1rem;
+}
+
+.beAwareText {
+  color: #1D1D1D;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.policyItem {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.policyItem:last-child {
+  margin-bottom: 0;
+}
+
+.policyTitle {
+  font-weight: 700;
+  color: #1D1D1D;
+  font-size: 16px;
+}
+
+.policyDescription {
+  color: #1D1D1D;
+  font-size: 16px;
+  font-weight: 400;
+}
+
 /* Layout for grouped description blocks (p + ul) in three columns */
 .descriptionGroups {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3,1fr);
-  padding-top: 30px;
-  margin-top: 30px;
-  border-top: 1px solid #1d1d1d;
+  grid-template-columns: repeat(3, 1fr);
+  padding-top: 15px;
+  margin-top: 15px;
 }
 
-.descriptionGroups ul{
+.descriptionGroups ul {
   padding-inline-start: 1.5rem;
 }
 
-.descriptionGroups ul li:not(:last-child){
+.descriptionGroups ul li:not(:last-child) {
   margin-bottom: 5px;
 }
 
@@ -869,7 +937,40 @@
     height: 200px;
   }
 
+  .propertySummary {
+    font-size: 16px;
+    line-height: 1.3;
+  }
 
+  .propertySummarySection {
+    padding-top: 30px;
+    margin-top: 20px;
+  }
+
+  .attributesList {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .beAwareContent {
+    margin-top: 0.75rem;
+  }
+
+  .policyItem {
+    margin-bottom: 0.75rem;
+  }
+
+  .policyTitle,
+  .policyDescription {
+    font-size: 14px;
+  }
+
+  .descriptionGroups {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -899,7 +1000,39 @@
     height: 180px;
   }
 
+  .propertySummary {
+    font-size: 14px;
+    line-height: 1.2;
+  }
 
+  .propertySummarySection {
+    padding-top: 25px;
+    margin-top: 15px;
+  }
+
+  .attributesList {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .beAwareContent {
+    margin-top: 0.5rem;
+  }
+
+  .policyItem {
+    margin-bottom: 0.5rem;
+  }
+
+  .policyTitle,
+  .policyDescription {
+    font-size: 13px;
+  }
+
+  .descriptionGroups {
+    gap: 6px;
+    padding-top: 8px;
+    margin-top: 8px;
+  }
 }
 
 /* Accordion and Map Section */
@@ -907,7 +1040,7 @@
   /* display: grid; */
   grid-template-columns: 1fr 1fr;
   gap: 30px;
-  padding-top: 20px;
+  padding-top: 30px;
 }
 
 .accordionContainer {
@@ -1050,9 +1183,8 @@
 
 .mapWrapper {
   position: relative;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   flex: 1;
 }
 
@@ -1197,12 +1329,6 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
-.heroImageMain {
-  width: 100%;
-  height: 400px;
-  object-fit: cover;
-  display: block;
-}
 
 /* Mobile responsive for hero image */
 @media (max-width: 768px) {

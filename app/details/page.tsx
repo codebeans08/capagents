@@ -310,7 +310,7 @@ export default function PropertyDetails() {
                         <div className={styles.detailsContainer}>
                             <div className={styles.header}>
                                 <h2 className={styles.propertyTitle}>
-                                    Property Details: {propertyData.id} - {propertyData.name}
+                                    Property Details: <span>{propertyData.id} - {propertyData.name}</span>
                                 </h2>
                                 <button
                                     onClick={handleBackToSearch}
@@ -438,20 +438,6 @@ export default function PropertyDetails() {
                                     </div>
                                 )}
 
-                                {hasNumber(propertyData.sleeps) && (
-                                    <div className={styles.infoRow}>
-                                        <span className={styles.label}>Sleeps:</span>
-                                        <span className={styles.value}>{propertyData.sleeps}</span>
-                                    </div>
-                                )}
-
-                                {hasNumber(propertyData.bathrooms) && (
-                                    <div className={styles.infoRow}>
-                                        <span className={styles.label}>Bathrooms:</span>
-                                        <span className={styles.value}>{propertyData.bathrooms}</span>
-                                    </div>
-                                )}
-
                                 {hasText(propertyData.suburb) && (
                                     <div className={styles.infoRow}>
                                         <span className={styles.label}>Suburb:</span>
@@ -459,10 +445,24 @@ export default function PropertyDetails() {
                                     </div>
                                 )}
 
+                                {hasNumber(propertyData.sleeps) && (
+                                    <div className={styles.infoRow}>
+                                        <span className={styles.label}>Sleeps:</span>
+                                        <span className={styles.value}>{propertyData.sleeps}</span>
+                                    </div>
+                                )}
+
                                 {hasNumber(propertyData.bedrooms) && (
                                     <div className={styles.infoRow}>
                                         <span className={styles.label}>Bedrooms:</span>
                                         <span className={styles.value}>{propertyData.bedrooms}</span>
+                                    </div>
+                                )}
+
+                                {hasNumber(propertyData.bathrooms) && (
+                                    <div className={styles.infoRow}>
+                                        <span className={styles.label}>Bathrooms:</span>
+                                        <span className={styles.value}>{propertyData.bathrooms}</span>
                                     </div>
                                 )}
 
@@ -502,9 +502,24 @@ export default function PropertyDetails() {
                                 )}
                             </div>
 
+                            {/* Property Attributes/Features Section */}
+                            {propertyData.attributes && propertyData.attributes.length > 0 && (
+                                <div className={styles.section}>
+                                    <h3 className={styles.sectionTitle}>Attributes:</h3>
+                                    <div className={styles.attributesList}>
+                                        {propertyData.attributes!.map((attribute, index) => (
+                                            <span key={attribute.id || index} className={styles.attributeText}>
+                                                {attribute.name}
+                                                {index < propertyData.attributes!.length - 1 ? ', ' : ''}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             {hasText(propertyData.description) && (
                                 <div className={styles.section}>
-                                    <h3 className={styles.sectionTitle}>Property Description</h3>
+                                    <h3 className={styles.sectionTitle}>Description:</h3>
                                     <div className={styles.description}>
                                         {descriptionGroups.length > 0 ? (
                                             <>
@@ -519,6 +534,43 @@ export default function PropertyDetails() {
                                             </>
                                         ) : (
                                             <div dangerouslySetInnerHTML={{ __html: propertyData.description }} />
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Property Summary Section */}
+                            <div className={styles.propertySummarySection}>
+                                <div className={styles.propertySummary}>
+                                    <span className={styles.summaryName}>{propertyData.name}</span>
+                                    <span className={styles.summarySeparator}>, </span>
+                                    <span className={styles.summarySuburb}>{propertyData.suburb}</span>
+                                    <span className={styles.summarySeparator}>, </span>
+                                    <span className={styles.summaryBedrooms}>{propertyData.bedrooms} bedroom</span>
+                                    {propertyData.bedrooms !== 1 && <span>s</span>}
+                                    <span className={styles.summarySeparator}>, </span>
+                                    <span className={styles.summaryPool}>Swimming pool</span>
+                                    <span className={styles.summarySeparator}>, </span>
+                                    <span className={styles.summaryId}>{propertyData.id}</span>
+                                </div>
+                            </div>
+
+                            {/* Be Aware Section */}
+                            {propertyData.be_aware && (
+                                <div className={styles.section}>
+                                    <h3 className={styles.sectionTitle}>Be Aware:</h3>
+                                    <div className={styles.beAwareContent}>
+                                        {Array.isArray(propertyData.be_aware) ? (
+                                            propertyData.be_aware.map((policy, index) => (
+                                                <div key={index} className={styles.policyItem}>
+                                                    <span className={styles.policyTitle}>{policy.title}</span>
+                                                    <span className={styles.policyDescription}> {policy.description}</span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className={styles.beAwareText}>
+                                                {propertyData.be_aware}
+                                            </div>
                                         )}
                                     </div>
                                 </div>
