@@ -1,5 +1,5 @@
 {
   "/api/properties/[id]/route": "app/api/properties/[id]/route.js",
-  "/details/page": "app/details/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/details/page": "app/details/page.js"
 }
