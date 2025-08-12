@@ -1152,7 +1152,7 @@
 .details_descriptionGroups__hezYa {
   display: grid;
   grid-gap: 10px;
-  padding-top: 15px;
+  padding-top: 8px;
   margin-top: 15px;
 }
 
@@ -1574,6 +1574,10 @@
 
 .details_mapPin__8vfAY {
   font-size: 20px;
+}
+
+.details_description_remainder__vD_zR p:first-child{
+  margin-bottom: 25px;
 }
 
 /* Mobile responsive for accordion and map */

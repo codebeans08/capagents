@@ -806,7 +806,7 @@
 .descriptionGroups {
   display: grid;
   grid-gap: 10px;
-  padding-top: 15px;
+  padding-top: 8px;
   margin-top: 15px;
 }
 
@@ -1224,6 +1224,10 @@
 
 .mapPin {
   font-size: 20px;
+}
+
+.description_remainder p:first-child{
+  margin-bottom: 25px;
 }
 
 /* Mobile responsive for accordion and map */

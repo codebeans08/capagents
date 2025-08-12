@@ -682,7 +682,7 @@ export default function PropertyDetails() {
                                             <>
                                                 {hasText(descriptionRemainder) && (
                                                     <div
-                                                        className="description-remainder"
+                                                        className={styles.description_remainder}
                                                         dangerouslySetInnerHTML={{ __html: (() => {
                                                             // Process the description to remove location content
                                                             let processedDescription = descriptionRemainder;
