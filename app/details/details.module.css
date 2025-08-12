@@ -136,6 +136,18 @@
   color: #167a75;
 }
 
+.tourLink {
+  color: #1E9A95;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.tourLink:hover {
+  color: #167a75;
+  text-decoration: underline;
+}
+
 .backButton {
   padding: 8px 16px;
   font-size: 14px;

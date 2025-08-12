@@ -63,7 +63,8 @@ const DUMMY_PROPERTY_DATA: PropertyData = {
         phone: '+27 21 123 4567',
         email: 'info@capeagents.co.za',
         officeHours: 'Monday - Friday: 9:00 AM - 6:00 PM'
-    }
+    },
+    three_dimensional_tour_url: 'https://example.com/3d-tour-sample'
 }
 
 // Removed feature accordion sections
@@ -653,6 +654,22 @@ export default function PropertyDetails() {
                                     <div className={styles.infoRow}>
                                         <span className={styles.label}>Parking:</span>
                                         <span className={styles.value}>{propertyData.parking}</span>
+                                    </div>
+                                )}
+
+                                {hasText(propertyData.three_dimensional_tour_url) && (
+                                    <div className={styles.infoRow}>
+                                        <span className={styles.label}>3D Tour Link:</span>
+                                        <span className={styles.value}>
+                                            <a 
+                                                href={propertyData.three_dimensional_tour_url} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className={styles.tourLink}
+                                            >
+                                                View 3D Virtual Tour
+                                            </a>
+                                        </span>
                                     </div>
                                 )}
                             </div>

@@ -42,6 +42,7 @@ export interface PropertyData {
     officeHours: string
   }
   property_url?: string
+  three_dimensional_tour_url?: string
 }
 
 type LooseObject = Record<string, unknown>
@@ -191,7 +192,8 @@ function mapToPropertyData(raw: LooseObject): PropertyData {
       email: toStringSafe(getFirstField((raw as any)?.contact || raw, ['email'])),
       officeHours: toStringSafe(getFirstField((raw as any)?.contact || raw, ['officeHours']))
     },
-    property_url: toStringSafe(getFirstField(raw, ['property_url', 'propertyUrl', 'website_url', 'websiteUrl', 'url', 'link']))
+    property_url: toStringSafe(getFirstField(raw, ['property_url', 'propertyUrl', 'website_url', 'websiteUrl', 'url', 'link'])),
+    three_dimensional_tour_url: toStringSafe(getFirstField(raw, ['three_dimensional_tour_url', 'threeDVirtualTourUrl', 'threeDVirtualTourUrl']))
   }
 }
 

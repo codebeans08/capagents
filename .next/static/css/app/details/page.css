@@ -476,6 +476,18 @@
   color: #167a75;
 }
 
+.details_tourLink__wxTJD {
+  color: #1E9A95;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  font-weight: 500;
+}
+
+.details_tourLink__wxTJD:hover {
+  color: #167a75;
+  text-decoration: underline;
+}
+
 .details_backButton__C_scC {
   padding: 8px 16px;
   font-size: 14px;
