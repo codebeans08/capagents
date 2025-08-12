@@ -1,4 +1,4 @@
-// File: D:\capagents\app\details\page.tsx
+// File: D:\Codebeans\capagents\app\details\page.tsx
 import * as entry from '../../../../app/details/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

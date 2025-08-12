@@ -693,7 +693,6 @@
 .details_label__pAxOO {
   font-weight: 700;
   color: #1D1D1D;
-  min-width: 120px;
   text-align: left;
   margin-right: 16px;
   font-size: 16px;
@@ -701,7 +700,6 @@
 
 .details_value__U7PSp {
   color: #1D1D1D;
-  flex: 1 1;
   text-align: left;
   font-size: 15px;
   line-height: 1.5;
@@ -1018,16 +1016,32 @@
   margin-top: 10px;
 }
 
-.details_attributesList__6UmRR {
+.details_attributesGrid__GmNsY {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 5px;
+  gap: 5px;
   margin-top: 1rem;
-  line-height: 1.6;
+}
+
+.details_attributeItem__QgHxh {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.details_attributeBullet__GUq8P {
   color: #1D1D1D;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
 }
 
 .details_attributeText__9dTj0 {
-  display: inline;
+  color: #1D1D1D;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .details_propertySummary__cA1AL {
@@ -1077,6 +1091,30 @@
   margin-top: 30px;
 }
 
+.details_beAwareSection__dZaud{
+  border-top: 1px solid #1d1d1d;
+  padding-top: 43px;
+  margin-top: 20px;
+}
+
+.details_locationSection__GoD_e {
+  padding-block: 20px 10px;
+}
+
+.details_locationSection__GoD_e h4 {
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1D1D1D;
+}
+
+.details_locationSection__GoD_e p {
+  margin-block: 0px 10px;
+  color: #1D1D1D;
+
+}
+
 
 .details_beAwareContent__pNhPH {
   margin-top: 1rem;
@@ -1114,7 +1152,6 @@
 .details_descriptionGroups__hezYa {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
   padding-top: 15px;
   margin-top: 15px;
 }
@@ -1679,6 +1716,25 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
+
+/* Responsive styles for attributes grid */
+@media (max-width: 768px) {
+  .details_attributesGrid__GmNsY {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  
+  .details_attributeItem__QgHxh {
+    padding: 2px 0;
+  }
+  
+  .details_attributeText__9dTj0 {
+    font-size: 14px;
+  }
+}
 
 /* Mobile responsive for hero image */
 @media (max-width: 768px) {

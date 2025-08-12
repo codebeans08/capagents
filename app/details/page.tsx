@@ -220,7 +220,7 @@ export default function PropertyDetails() {
                 setDescriptionRemainder('')
                 return
             }
-            
+
             const parser = new DOMParser()
             const doc = parser.parseFromString(`<div>${html}</div>`, 'text/html')
 
@@ -244,7 +244,7 @@ export default function PropertyDetails() {
                 setDescriptionRemainder('')
                 return
             }
-            
+
             const consumed = new Set<number>()
             const groups: string[] = []
 
@@ -269,7 +269,7 @@ export default function PropertyDetails() {
                     }
 
                     const startIndex = Math.max(0, Math.min(prevPIndex >= 0 ? prevPIndex : i, elements.length - 1))
-                    
+
                     // Build group HTML string directly instead of cloning nodes
                     let groupHtml = ''
                     for (let k = startIndex; k <= i && k < elements.length; k += 1) {
@@ -661,16 +661,18 @@ export default function PropertyDetails() {
                             {propertyData.attributes && propertyData.attributes.length > 0 && (
                                 <div className={styles.section}>
                                     <h3 className={styles.sectionTitle}>Attributes:</h3>
-                                    <div className={styles.attributesList}>
+                                    <div className={styles.attributesGrid}>
                                         {propertyData.attributes!.map((attribute, index) => (
-                                            <span key={attribute.id || index} className={styles.attributeText}>
-                                                {attribute.name}
-                                                {index < propertyData.attributes!.length - 1 ? ', ' : ''}
-                                            </span>
+                                            <div key={attribute.id || index} className={styles.attributeItem}>
+                                                <span className={styles.attributeBullet}>•</span>
+                                                <span className={styles.attributeText}>{attribute.name}</span>
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
                             )}
+
+
 
                             {hasText(propertyData.description) && (
                                 <div className={styles.section}>
@@ -679,7 +681,40 @@ export default function PropertyDetails() {
                                         {descriptionGroups.length > 0 ? (
                                             <>
                                                 {hasText(descriptionRemainder) && (
-                                                    <div dangerouslySetInnerHTML={{ __html: descriptionRemainder }} />
+                                                    <div
+                                                        className="description-remainder"
+                                                        dangerouslySetInnerHTML={{ __html: (() => {
+                                                            // Process the description to remove location content
+                                                            let processedDescription = descriptionRemainder;
+                                                            
+                                                            if (descriptionRemainder?.toUpperCase().includes('LOCATION')) {
+                                                                // Create a temporary div to parse the HTML
+                                                                const tempDiv = document.createElement('div');
+                                                                tempDiv.innerHTML = descriptionRemainder;
+                                                                
+                                                                const paragraphs = Array.from(tempDiv.querySelectorAll('p'));
+                                                                const locationIndex = paragraphs.findIndex(p =>
+                                                                    p.textContent?.toUpperCase().includes('LOCATION')
+                                                                );
+
+                                                                if (locationIndex !== -1) {
+                                                                    // Remove the LOCATION paragraph and all location-related paragraphs
+                                                                    const paragraphsToRemove = paragraphs.slice(locationIndex, -1);
+                                                                    paragraphsToRemove.forEach(p => p.remove());
+                                                                    
+                                                                    // Also remove the LOCATION paragraph itself
+                                                                    if (paragraphs[locationIndex]) {
+                                                                        paragraphs[locationIndex].remove();
+                                                                    }
+                                                                    
+                                                                    // Get the cleaned HTML
+                                                                    processedDescription = tempDiv.innerHTML;
+                                                                }
+                                                            }
+                                                            
+                                                            return processedDescription;
+                                                        })() }}
+                                                    />
                                                 )}
                                                 <div className={styles.descriptionGroups}>
                                                     {descriptionGroups.map((groupHtml, idx) => (
@@ -694,33 +729,41 @@ export default function PropertyDetails() {
                                 </div>
                             )}
 
-                            {/* Property Summary Section */}
-                            <div className={styles.propertySummarySection}>
-                                <div className={styles.propertySummary}>
-                                    <span className={styles.summaryName}>
-                                        {propertyData.property_url ? (
-                                            <a href={propertyData.property_url} target="_blank" rel="noopener noreferrer" className={styles.propertySummaryLink}>
-                                                {propertyData.name}
-                                            </a>
-                                        ) : (
-                                            propertyData.name
-                                        )}
-                                    </span>
-                                    <span className={styles.summarySeparator}>, </span>
-                                    <span className={styles.summarySuburb}>{propertyData.suburb}</span>
-                                    <span className={styles.summarySeparator}>, </span>
-                                    <span className={styles.summaryBedrooms}>{propertyData.bedrooms} bedroom</span>
-                                    {propertyData.bedrooms !== 1 && <span>s</span>}
-                                    <span className={styles.summarySeparator}>, </span>
-                                    <span className={styles.summaryPool}>Swimming pool</span>
-                                    <span className={styles.summarySeparator}>, </span>
-                                    <span className={styles.summaryId}>{propertyData.id}</span>
-                                </div>
-                            </div>
+
+
+                            {/* Location Section */}
+                            {(() => {
+                                if (descriptionRemainder?.toUpperCase().includes('LOCATION')) {
+                                    // Create a temporary div to parse the HTML
+                                    const tempDiv = document.createElement('div');
+                                    tempDiv.innerHTML = descriptionRemainder;
+                                    
+                                    const paragraphs = Array.from(tempDiv.querySelectorAll('p'));
+                                    const locationIndex = paragraphs.findIndex(p =>
+                                        p.textContent?.toUpperCase().includes('LOCATION')
+                                    );
+
+                                    if (locationIndex !== -1) {
+                                        // LOCATION ke baad ke saare <p>, last one exclude
+                                        const afterLocation = paragraphs.slice(locationIndex + 1, -1);
+                                        const locationContent = afterLocation.map(p => p.textContent?.trim() || '');
+                                        
+                                        return (
+                                            <div className={styles.locationSection}>
+                                                <h4>Location:</h4>
+                                                {locationContent.map((item, index) => (
+                                                    <p key={index}>{item}</p>
+                                                ))}
+                                            </div>
+                                        );
+                                    }
+                                }
+                                return null;
+                            })()}
 
                             {/* Be Aware Section */}
                             {propertyData.be_aware && (
-                                <div className={styles.section}>
+                                <div className={styles.beAwareSection}>
                                     <h3 className={styles.sectionTitle}>Be Aware:</h3>
                                     <div className={styles.beAwareContent}>
                                         {Array.isArray(propertyData.be_aware) ? (

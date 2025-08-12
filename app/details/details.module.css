@@ -350,7 +350,6 @@
 .label {
   font-weight: 700;
   color: #1D1D1D;
-  min-width: 120px;
   text-align: left;
   margin-right: 16px;
   font-size: 16px;
@@ -358,7 +357,6 @@
 
 .value {
   color: #1D1D1D;
-  flex: 1;
   text-align: left;
   font-size: 15px;
   line-height: 1.5;
@@ -673,16 +671,31 @@
   margin-top: 10px;
 }
 
-.attributesList {
+.attributesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
   margin-top: 1rem;
-  line-height: 1.6;
+}
+
+.attributeItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attributeBullet {
   color: #1D1D1D;
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
 }
 
 .attributeText {
-  display: inline;
+  color: #1D1D1D;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
 }
 
 .propertySummary {
@@ -732,6 +745,30 @@
   margin-top: 30px;
 }
 
+.beAwareSection{
+  border-top: 1px solid #1d1d1d;
+  padding-top: 43px;
+  margin-top: 20px;
+}
+
+.locationSection {
+  padding-block: 20px 10px;
+}
+
+.locationSection h4 {
+  text-transform: uppercase;
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1D1D1D;
+}
+
+.locationSection p {
+  margin-block: 0px 10px;
+  color: #1D1D1D;
+
+}
+
 
 .beAwareContent {
   margin-top: 1rem;
@@ -769,7 +806,6 @@
 .descriptionGroups {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, 1fr);
   padding-top: 15px;
   margin-top: 15px;
 }
@@ -1330,6 +1366,25 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
+
+/* Responsive styles for attributes grid */
+@media (max-width: 768px) {
+  .attributesGrid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  
+  .attributeItem {
+    padding: 2px 0;
+  }
+  
+  .attributeText {
+    font-size: 14px;
+  }
+}
 
 /* Mobile responsive for hero image */
 @media (max-width: 768px) {

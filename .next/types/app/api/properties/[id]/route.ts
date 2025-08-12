@@ -1,4 +1,4 @@
-// File: D:\capagents\app\api\properties\[id]\route.ts
+// File: D:\Codebeans\capagents\app\api\properties\[id]\route.ts
 import * as entry from '../../../../../../app/api/properties/[id]/route.js'
 import type { NextRequest } from 'next/server.js'
 
