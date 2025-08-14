@@ -450,12 +450,12 @@ export default function PropertyDetails() {
                                 <h2 className={styles.propertyTitle}>
                                     Property Details: <span><a href={propertyData.property_url} target="_blank" rel="noopener noreferrer" className={styles.propertyTitleLink}>{propertyData.id} - {propertyData.name}</a></span>
                                 </h2>
-                                <button
+                                {/* <button
                                     onClick={handleBackToSearch}
                                     className={styles.backButton}
                                 >
                                     Back to Search
-                                </button>
+                                </button> */}
                             </div>
 
                             {propertyData.images.filter(Boolean).length > 0 && (
@@ -587,12 +587,12 @@ export default function PropertyDetails() {
                                     </div>
                                 )}
 
-                                {hasText(propertyData.address) && (
+                                {/* {hasText(propertyData.address) && (
                                     <div className={styles.infoRow}>
                                         <span className={styles.label}>Address:</span>
                                         <span className={styles.value}>{propertyData.address}</span>
                                     </div>
-                                )}
+                                )} */}
 
                                 {hasText(propertyData.suburb) && (
                                     <div className={styles.infoRow}>
@@ -756,12 +756,13 @@ export default function PropertyDetails() {
                                     tempDiv.innerHTML = descriptionRemainder;
                                     
                                     const paragraphs = Array.from(tempDiv.querySelectorAll('p'));
-                                    const locationIndex = paragraphs.findIndex(p =>
-                                        p.textContent?.toUpperCase().includes('LOCATION')
-                                    );
+                                    const locationIndex = paragraphs.findIndex(p => {
+                                        const text = p.textContent?.trim().toUpperCase();
+                                        return text === 'LOCATION';
+                                    });
 
                                     if (locationIndex !== -1) {
-                                        // LOCATION ke baad ke saare <p>, last one exclude
+                                        // LOCATION ke baad ke saare <p> tags, last one exclude
                                         const afterLocation = paragraphs.slice(locationIndex + 1, -1);
                                         const locationContent = afterLocation.map(p => p.textContent?.trim() || '');
                                         

@@ -363,7 +363,7 @@
   font-weight: 700;
   color: #1D1D1D;
   text-align: left;
-  margin-right: 16px;
+  margin-right: 8px;
   font-size: 16px;
 }
 
@@ -496,7 +496,7 @@
 
 
 
-  
+
 
   .label {
     min-width: auto;
@@ -534,7 +534,7 @@
     max-width: 180px;
   }
 
-  
+
 
   .propertyTitle {
     font-size: 1rem;
@@ -756,7 +756,7 @@
   margin-top: 30px;
 }
 
-.beAwareSection{
+.beAwareSection {
   border-top: 1px solid #1d1d1d;
   padding-top: 43px;
   margin-top: 20px;
@@ -1237,8 +1237,8 @@
   font-size: 20px;
 }
 
-.description_remainder p:first-child{
-  margin-bottom: 25px;
+.description_remainder p:last-child {
+  margin-block: 30px 25px;
 }
 
 /* Mobile responsive for accordion and map */
@@ -1337,6 +1337,7 @@
 
 /* Extra small screens */
 @media (max-width: 360px) {
+
   .container :global(.swiper-button-prev-custom),
   .container :global(.swiper-button-next-custom) {
     width: 30px;
@@ -1391,11 +1392,11 @@
 }
 
 @media (max-width: 480px) {
-  
+
   .attributeItem {
     padding: 2px 0;
   }
-  
+
   .attributeText {
     font-size: 14px;
   }
@@ -1450,6 +1451,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }

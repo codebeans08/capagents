@@ -8,6 +8,9 @@ export const metadata: Metadata = {
     index: false,
     follow: false,
   },
+  icons: {
+    icon: '/favicon.ico', // Path relative to /public
+  },
 }
 
 export default function RootLayout({

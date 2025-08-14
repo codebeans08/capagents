@@ -706,7 +706,7 @@
   font-weight: 700;
   color: #1D1D1D;
   text-align: left;
-  margin-right: 16px;
+  margin-right: 8px;
   font-size: 16px;
 }
 
@@ -840,7 +840,7 @@
 
 
 
-  
+
 
   .details_label__pAxOO {
     min-width: auto;
@@ -878,7 +878,7 @@
     max-width: 180px;
   }
 
-  
+
 
   .details_propertyTitle__MF5H_ {
     font-size: 1rem;
@@ -1102,7 +1102,7 @@
   margin-top: 30px;
 }
 
-.details_beAwareSection__dZaud{
+.details_beAwareSection__dZaud {
   border-top: 1px solid #1d1d1d;
   padding-top: 43px;
   margin-top: 20px;
@@ -1587,8 +1587,8 @@
   font-size: 20px;
 }
 
-.details_description_remainder__vD_zR p:first-child{
-  margin-bottom: 25px;
+.details_description_remainder__vD_zR p:last-child {
+  margin-block: 30px 25px;
 }
 
 /* Mobile responsive for accordion and map */
@@ -1687,6 +1687,7 @@
 
 /* Extra small screens */
 @media (max-width: 360px) {
+
   .details_container__Jis22 .swiper-button-prev-custom,
   .details_container__Jis22 .swiper-button-next-custom {
     width: 30px;
@@ -1741,11 +1742,11 @@
 }
 
 @media (max-width: 480px) {
-  
+
   .details_attributeItem__QgHxh {
     padding: 2px 0;
   }
-  
+
   .details_attributeText__9dTj0 {
     font-size: 14px;
   }
@@ -1800,6 +1801,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
