@@ -821,6 +821,10 @@
   margin-top: 15px;
 }
 
+.descriptionGroups p>em {
+  font-weight: bold;
+}
+
 .descriptionGroups ul {
   padding-inline-start: 1.5rem;
 }

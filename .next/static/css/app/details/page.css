@@ -1167,6 +1167,10 @@
   margin-top: 15px;
 }
 
+.details_descriptionGroups__hezYa p>em {
+  font-weight: bold;
+}
+
 .details_descriptionGroups__hezYa ul {
   -webkit-padding-start: 1.5rem;
           padding-inline-start: 1.5rem;
